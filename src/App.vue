@@ -1,10 +1,14 @@
 <template>
-  <div style="display: flex; align-items: center">
+  <div style="display: flex">
     <button @click="multiplyMatrices">Multiply Matrices</button>
     <Matrix :matrix="matrixA" />
     <span> X </span>
-    <Matrix :matrix="matrixB" />
-    <Matrix v-if="resultMatrix" :matrix="resultMatrix" />
+    <div
+      :class="['matrix-transition', { 'matrix-transformed': isTransformed }]"
+    >
+      <Matrix :matrix="matrixB" />
+    </div>
+    <Matrix v-if="false" :matrix="resultMatrix" />
   </div>
 </template>
 
@@ -26,6 +30,7 @@ const matrixB = ref([
   [2.21, 3.34, 4.48],
 ]);
 
+const isTransformed = ref(false);
 const resultMatrix = ref(null);
 
 const multiplyMatrices = () => {
@@ -52,5 +57,21 @@ const multiplyMatrices = () => {
   }
 
   resultMatrix.value = result;
+  isTransformed.value = true;
 };
 </script>
+
+<style>
+.matrix-transition,
+.matrix-transition td{
+  transition: transform 1s, top 1s, left 1s;
+}
+.matrix-transformed {
+  transform: translateX(90px) translateY(-250px) rotateZ(-90deg);
+  transform-origin: left bottom;
+}
+.matrix-transformed td {
+  transform: rotateZ(90deg);
+  transform-origin: center center;
+}
+</style>
