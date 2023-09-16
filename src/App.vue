@@ -52,7 +52,7 @@ const stepwiseMultiplication = () => {
     console.error("Matrix multiplication not possible");
     return;
   }
-  const maxSteps = matrixA.value.length * matrixB.value[0].length; // Total steps needed
+  const maxSteps = matrixA.value.length + matrixB.value[0].length; // Total steps needed
 
   if (step.value === 0) {
     const matrixAEl = matrixARef.value.$el;
