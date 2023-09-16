@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex">
+  <div style="display: flex; align-items:center;">
     <button @click="multiplyMatrices">Multiply Matrices</button>
     <Matrix ref="matrixARef" :matrix="matrixA" />
     <span> X </span>
