@@ -1,13 +1,9 @@
 <template>
-  <div style="display: flex; align-items:center;">
+  <div style="display: flex; align-items: center">
     <button @click="multiplyMatrices">Multiply Matrices</button>
     <Matrix ref="matrixARef" :matrix="matrixA" />
     <span> X </span>
-    <div
-      ref="matrixBContainer"
-      :style="transformStyle"
-      class="matrix-transition"
-    >
+    <div :style="transformStyle" class="matrix-transition">
       <Matrix ref="matrixBRef" :matrix="matrixB" />
     </div>
   </div>
@@ -35,7 +31,6 @@ const transformStyle = ref({});
 
 const matrixARef = ref(null);
 const matrixBRef = ref(null);
-const matrixBContainerRef = ref(null);
 
 const isTransformed = ref(false);
 const resultMatrix = ref(null);
@@ -78,12 +73,22 @@ const setTransformStyle = () => {
   const translateX = matrixARect.left - matrixBRect.left;
   const translateY = matrixARect.top - matrixBRect.top;
 
-  transformStyle.value = {
-    transform: `translateX(${translateX}px) translateY(${translateY}px) rotateZ(-90deg)`,
-    transformOrigin: "top left",
-  };
+  const rowHeightA = matrixARect.height / matrixA.value.length;
 
-  isTransformed.value = true;
+  let step = 0;
+  const moveStepwise = () => {
+    if (step < matrixA.value.length + matrixB.value[0].length + 1) {
+      transformStyle.value.transform = `
+        translateX(${translateX}px) 
+        translateY(${translateY + step * rowHeightA}px) 
+        rotateZ(-90deg)
+      `;
+      transformStyle.value.transformOrigin = "top left";
+      step++;
+      setTimeout(moveStepwise, 800);
+    }
+  };
+  moveStepwise();
 };
 </script>
 
