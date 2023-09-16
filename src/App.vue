@@ -1,10 +1,18 @@
 <template>
   <div style="display: flex; align-items: center">
     <button @click="stepwiseMultiplication">Multiply Matrices</button>
-    <Matrix ref="matrixARef" :matrix="matrixA" />
+    <Matrix
+      ref="matrixARef"
+      :matrix="matrixA"
+      :activeRows="matrixAActiveRows"
+    />
     <span> X </span>
     <div :style="transformStyle" class="matrix-transition">
-      <Matrix ref="matrixBRef" :matrix="matrixB" />
+      <Matrix
+        ref="matrixBRef"
+        :matrix="matrixB"
+        :activeRows="matrixBActivecolumns"
+      />
     </div>
     <Matrix v-if="resultMatrix" :matrix="resultMatrix"></Matrix>
   </div>
@@ -70,11 +78,12 @@ const stepwiseMultiplication = () => {
       .map(() => Array(colsB).fill(null)); // Initialize with null
 
     resultMatrix.value = result;
+
   }
 
   if (step.value < maxSteps) {
     // Determine the current diagonal to calculate
-    let diag = step.value;
+    let diag = step.value-1;
 
     // Loop to calculate the values of cells in the current diagonal
     for (let i = 0; i <= diag; i++) {
