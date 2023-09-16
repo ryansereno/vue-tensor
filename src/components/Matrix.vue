@@ -1,7 +1,11 @@
 <template>
   <table>
     <tr v-for="(row, rowIndex) in matrix" :key="rowIndex">
-      <td v-for="(column, colIndex) in row" :key="colIndex">
+      <td
+        v-for="(column, colIndex) in row"
+        :key="colIndex"
+        :class="{ activeRow: isActiveRow(rowIndex), activeColumn: isActiveColumn(colIndex) }"
+      >
         {{ column }}
       </td>
     </tr>
@@ -12,7 +16,11 @@
 import { ref } from "vue";
 import { defineProps } from "vue";
 
-const props = defineProps(["matrix"]);
+const props = defineProps(["matrix", "activeRows", "activeColumns"]);
+const isActiveRow = (rowIndex) =>
+  props.activeRows && props.activeRows.includes(rowIndex);
+const isActiveColumn = (colIndex) => props.activeColumns && props.activeColumns.includes(colIndex);
+
 </script>
 
 <style scoped>
@@ -25,6 +33,12 @@ td {
   height: 50px;
   overflow: hidden;
   border: 1px solid gray;
+}
+.activeRow {
+  background-color: blue;
+}
+.activeColumn{
+  background-color: yellow;
 }
 table tr:first-child td:first-child {
   border-top-left-radius: 5px;

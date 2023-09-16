@@ -11,7 +11,7 @@
       <Matrix
         ref="matrixBRef"
         :matrix="matrixB"
-        :activeRows="matrixBActivecolumns"
+        :activeColumns="matrixBActivecolumns"
       />
     </div>
     <Matrix v-if="resultMatrix" :matrix="resultMatrix"></Matrix>
@@ -41,12 +41,13 @@ const transformStyle = ref({});
 const matrixARef = ref(null);
 const matrixBRef = ref(null);
 
+const matrixAActiveRows = ref([])
+const matrixBActivecolumns = ref([])
+
 const isTransformed = ref(false);
 const resultMatrix = ref(null);
 
 const step = ref(0);
-
-///////////////////////////////////////////////////
 
 let translateX, translateY, rowHeightA;
 
@@ -63,6 +64,7 @@ const stepwiseMultiplication = () => {
   const maxSteps = matrixA.value.length + matrixB.value[0].length; // Total steps needed
 
   if (step.value === 0) {
+    //get DOM element locations
     const matrixAEl = matrixARef.value.$el;
     const matrixBEl = matrixBRef.value.$el;
 
@@ -73,20 +75,21 @@ const stepwiseMultiplication = () => {
     translateY = matrixARect.top - matrixBRect.top;
     rowHeightA = matrixARect.height / matrixA.value.length;
 
+    //initialize resultMatrix values
     const result = Array(rowsA)
       .fill(null)
       .map(() => Array(colsB).fill(null)); // Initialize with null
 
     resultMatrix.value = result;
-
   }
 
   if (step.value < maxSteps) {
     // Determine the current diagonal to calculate
-    let diag = step.value-1;
+    let diag = step.value - 1;
 
     // Loop to calculate the values of cells in the current diagonal
     for (let i = 0; i <= diag; i++) {
+
       let row = i;
       let col = diag - i;
 
@@ -107,7 +110,6 @@ const stepwiseMultiplication = () => {
     transformStyle.value.transformOrigin = "top left";
     // Increment the step and set a timeout to call this function again
     step.value++;
-    console.log(step.value, maxSteps);
     setTimeout(stepwiseMultiplication, 1000);
   }
 };
