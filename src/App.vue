@@ -1,11 +1,12 @@
 <template>
   <div style="display: flex; align-items: center">
-    <button @click="multiplyMatrices">Multiply Matrices</button>
+    <button @click="stepwiseMultiplication">Multiply Matrices</button>
     <Matrix ref="matrixARef" :matrix="matrixA" />
     <span> X </span>
     <div :style="transformStyle" class="matrix-transition">
       <Matrix ref="matrixBRef" :matrix="matrixB" />
     </div>
+    <Matrix v-if="resultMatrix" :matrix="resultMatrix"></Matrix>
   </div>
 </template>
 
@@ -35,60 +36,71 @@ const matrixBRef = ref(null);
 const isTransformed = ref(false);
 const resultMatrix = ref(null);
 
-const multiplyMatrices = () => {
+const step = ref(0);
+
+///////////////////////////////////////////////////
+
+let translateX, translateY, rowHeightA;
+
+const stepwiseMultiplication = () => {
   const rowsA = matrixA.value.length;
   const colsA = matrixA.value[0].length;
   const rowsB = matrixB.value.length;
   const colsB = matrixB.value[0].length;
-
+  //check dimensions
   if (colsA !== rowsB) {
     console.error("Matrix multiplication not possible");
     return;
   }
+  const maxSteps = matrixA.value.length * matrixB.value[0].length; // Total steps needed
 
-  const result = Array(rowsA)
-    .fill(0)
-    .map((row) => Array(colsB).fill(0));
+  if (step.value === 0) {
+    const matrixAEl = matrixARef.value.$el;
+    const matrixBEl = matrixBRef.value.$el;
 
-  for (let i = 0; i < rowsA; i++) {
-    for (let j = 0; j < colsB; j++) {
-      for (let k = 0; k < colsA; k++) {
-        result[i][j] += matrixA.value[i][k] * matrixB.value[k][j];
-      }
-    }
+    const matrixARect = matrixAEl.getBoundingClientRect();
+    const matrixBRect = matrixBEl.getBoundingClientRect();
+
+    translateX = matrixARect.left - matrixBRect.left;
+    translateY = matrixARect.top - matrixBRect.top;
+    rowHeightA = matrixARect.height / matrixA.value.length;
+
+    const result = Array(rowsA)
+      .fill(null)
+      .map(() => Array(colsB).fill(null)); // Initialize with null
+
+    resultMatrix.value = result;
   }
 
-  resultMatrix.value = result;
-  isTransformed.value = true;
-  setTransformStyle();
-};
-const setTransformStyle = () => {
-  const matrixAEl = matrixARef.value.$el;
-  const matrixBEl = matrixBRef.value.$el;
+  if (step.value < maxSteps) {
+    // Determine the current diagonal to calculate
+    let diag = step.value;
 
-  const matrixARect = matrixAEl.getBoundingClientRect();
-  const matrixBRect = matrixBEl.getBoundingClientRect();
+    // Loop to calculate the values of cells in the current diagonal
+    for (let i = 0; i <= diag; i++) {
+      let row = i;
+      let col = diag - i;
 
-  // Calculate the necessary transform values
-  const translateX = matrixARect.left - matrixBRect.left;
-  const translateY = matrixARect.top - matrixBRect.top;
-
-  const rowHeightA = matrixARect.height / matrixA.value.length;
-
-  let step = 0;
-  const moveStepwise = () => {
-    if (step < matrixA.value.length + matrixB.value[0].length + 1) {
-      transformStyle.value.transform = `
-        translateX(${translateX}px) 
-        translateY(${translateY + step * rowHeightA}px) 
-        rotateZ(-90deg)
-      `;
-      transformStyle.value.transformOrigin = "top left";
-      step++;
-      setTimeout(moveStepwise, 800);
+      if (row < rowsA && col < colsB) {
+        resultMatrix.value[row][col] = 0;
+        for (let k = 0; k < colsA; k++) {
+          resultMatrix.value[row][col] +=
+            matrixA.value[row][k] * matrixB.value[k][col];
+        }
+      }
     }
-  };
-  moveStepwise();
+
+    transformStyle.value.transform = `
+      translateX(${translateX}px) 
+      translateY(${translateY + step.value * rowHeightA}px) 
+      rotateZ(-90deg)
+    `;
+    transformStyle.value.transformOrigin = "top left";
+    // Increment the step and set a timeout to call this function again
+    step.value++;
+    console.log(step.value, maxSteps);
+    setTimeout(stepwiseMultiplication, 1000);
+  }
 };
 </script>
 
@@ -100,8 +112,8 @@ const setTransformStyle = () => {
 .matrix-transformed {
   transform-origin: left bottom;
 }
-/*.matrix-transformed td {
+.matrix-transformed td {
   transform: rotateZ(90deg);
   transform-origin: center center;
-}*/
+}
 </style>
