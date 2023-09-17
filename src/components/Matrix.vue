@@ -11,6 +11,12 @@
         >
           {{ column }}
         </span>
+        <span
+          class="math-symbol"
+          :style="{ opacity: isActiveRow(rowIndex) ? 1 : 0 }"
+        >
+          ×
+        </span>
       </td>
     </tr>
   </table>
@@ -38,6 +44,7 @@ table {
   border-spacing: 0;
 }
 td {
+  position: relative;
   max-width: 50px;
   min-width: 50px;
   height: 50px;
@@ -65,6 +72,13 @@ td > span {
 }
 .rotated:not(.activeColumn) {
   transform: rotateZ(90deg);
+}
+.math-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.5em;
 }
 table tr:first-child td:first-child {
   border-top-left-radius: 5px;
