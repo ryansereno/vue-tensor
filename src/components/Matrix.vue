@@ -45,17 +45,13 @@ td {
   border: 1px solid gray;
 }
 td > span {
+  transition: transform 0.3s;
   display: flex;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-}
-.activeRow,
-.activeColumn,
-.rotated {
-  transition: transform 0.3s; /* Adjust duration as needed */
 }
 
 .activeRow {

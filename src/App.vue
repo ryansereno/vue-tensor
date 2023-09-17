@@ -66,30 +66,32 @@ const stepwiseMultiplication = () => {
 
   if (step.value === 0) {
     //get DOM element locations
-    const matrixAEl = matrixARef.value.$el;
-    const matrixBEl = matrixBRef.value.$el;
+    const matrixARect = matrixARef.value.$el.getBoundingClientRect();
+    const matrixBRect = matrixBRef.value.$el.getBoundingClientRect();
 
-    const matrixARect = matrixAEl.getBoundingClientRect();
-    const matrixBRect = matrixBEl.getBoundingClientRect();
-
+    //initial movement of MatrixB, positioned above MatrixA and rotated
     translateX = matrixARect.left - matrixBRect.left;
     translateY = matrixARect.top - matrixBRect.top;
     rowHeightA = matrixARect.height / matrixA.value.length;
 
-    //initialize resultMatrix values
+    //initialize resultMatrix wirh null values
     const result = Array(rowsA)
       .fill(null)
-      .map(() => Array(colsB).fill(null)); // Initialize with null
-
-    isRotated.value = true;
+      .map(() => Array(colsB).fill(null));
     resultMatrix.value = result;
+
+    //send cell isRotated state to child matrices
+    isRotated.value = true;
   }
 
   if (step.value < maxSteps) {
     // Determine the current diagonal to calculate
     let diag = step.value - 1;
-    matrixAActiveRows.value = []; // Reset the active rows and columns at the beginning of each step
+
+    // Reset the active rows and columns at the beginning of each step
+    matrixAActiveRows.value = [];
     matrixBActiveColumns.value = [];
+
     // Loop to calculate the values of cells in the current diagonal
     for (let i = 0; i <= diag; i++) {
       let row = i;
@@ -105,13 +107,14 @@ const stepwiseMultiplication = () => {
         }
       }
     }
-
+    //translateX and translateY are variables set during step 0, they are just updated here
     transformStyle.value.transform = `
       translateX(${translateX}px) 
       translateY(${translateY + step.value * rowHeightA}px) 
       rotateZ(-90deg)
     `;
     transformStyle.value.transformOrigin = "top left";
+
     // Increment the step and set a timeout to call this function again
     step.value++;
     setTimeout(stepwiseMultiplication, 1000);
@@ -120,15 +123,7 @@ const stepwiseMultiplication = () => {
 </script>
 
 <style>
-.matrix-transition,
-.matrix-transition td {
+.matrix-transition {
   transition: transform 1s, top 1s, left 1s;
-}
-.matrix-transformed {
-  transform-origin: left bottom;
-}
-.matrix-transformed td {
-  transform: rotateZ(90deg);
-  transform-origin: center center;
 }
 </style>
