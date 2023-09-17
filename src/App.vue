@@ -11,7 +11,8 @@
       <Matrix
         ref="matrixBRef"
         :matrix="matrixB"
-        :activeColumns="matrixBActivecolumns"
+        :activeColumns="matrixBActiveColumns"
+        :matrixIsRotated="isRotated"
       />
     </div>
     <Matrix v-if="resultMatrix" :matrix="resultMatrix"></Matrix>
@@ -41,10 +42,10 @@ const transformStyle = ref({});
 const matrixARef = ref(null);
 const matrixBRef = ref(null);
 
-const matrixAActiveRows = ref([])
-const matrixBActivecolumns = ref([])
+const matrixAActiveRows = ref([]);
+const matrixBActiveColumns = ref([]);
 
-const isTransformed = ref(false);
+const isRotated = ref(false);
 const resultMatrix = ref(null);
 
 const step = ref(0);
@@ -80,20 +81,23 @@ const stepwiseMultiplication = () => {
       .fill(null)
       .map(() => Array(colsB).fill(null)); // Initialize with null
 
+    isRotated.value = true;
     resultMatrix.value = result;
   }
 
   if (step.value < maxSteps) {
     // Determine the current diagonal to calculate
     let diag = step.value - 1;
-
+    matrixAActiveRows.value = []; // Reset the active rows and columns at the beginning of each step
+    matrixBActiveColumns.value = [];
     // Loop to calculate the values of cells in the current diagonal
     for (let i = 0; i <= diag; i++) {
-
       let row = i;
       let col = diag - i;
 
       if (row < rowsA && col < colsB) {
+        matrixAActiveRows.value.push(row);
+        matrixBActiveColumns.value.push(col);
         resultMatrix.value[row][col] = 0;
         for (let k = 0; k < colsA; k++) {
           resultMatrix.value[row][col] +=

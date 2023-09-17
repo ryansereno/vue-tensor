@@ -1,12 +1,16 @@
 <template>
   <table>
     <tr v-for="(row, rowIndex) in matrix" :key="rowIndex">
-      <td
-        v-for="(column, colIndex) in row"
-        :key="colIndex"
-        :class="{ activeRow: isActiveRow(rowIndex), activeColumn: isActiveColumn(colIndex) }"
-      >
-        {{ column }}
+      <td v-for="(column, colIndex) in row" :key="colIndex">
+        <span
+          :class="{
+            activeRow: isActiveRow(rowIndex),
+            activeColumn: isActiveColumn(colIndex),
+            rotated: matrixIsRotated(),
+          }"
+        >
+          {{ column }}
+        </span>
       </td>
     </tr>
   </table>
@@ -16,11 +20,17 @@
 import { ref } from "vue";
 import { defineProps } from "vue";
 
-const props = defineProps(["matrix", "activeRows", "activeColumns"]);
+const props = defineProps([
+  "matrix",
+  "activeRows",
+  "activeColumns",
+  "matrixIsRotated",
+]);
 const isActiveRow = (rowIndex) =>
   props.activeRows && props.activeRows.includes(rowIndex);
-const isActiveColumn = (colIndex) => props.activeColumns && props.activeColumns.includes(colIndex);
-
+const isActiveColumn = (colIndex) =>
+  props.activeColumns && props.activeColumns.includes(colIndex);
+const matrixIsRotated = () => props.matrixIsRotated;
 </script>
 
 <style scoped>
@@ -34,11 +44,31 @@ td {
   overflow: hidden;
   border: 1px solid gray;
 }
-.activeRow {
-  background-color: blue;
+td > span {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
-.activeColumn{
-  background-color: yellow;
+.activeRow,
+.activeColumn,
+.rotated {
+  transition: transform 0.3s; /* Adjust duration as needed */
+}
+
+.activeRow {
+  transform: scale(0.55) translateX(-16px) translateY(10px);
+}
+.activeColumn:not(.rotated) {
+  transform: scale(0.55) translateX(17px) translateY(-13px);
+}
+.activeColumn.rotated {
+  transform: rotateZ(90deg) scale(0.55) translateX(17px) translateY(-13px);
+}
+.rotated:not(.activeColumn) {
+  transform: rotateZ(90deg);
 }
 table tr:first-child td:first-child {
   border-top-left-radius: 5px;
