@@ -34,8 +34,10 @@ const props = defineProps([
 ]);
 const isActiveRow = (rowIndex) =>
   props.activeRows && props.activeRows.includes(rowIndex);
+
 const isActiveColumn = (colIndex) =>
   props.activeColumns && props.activeColumns.includes(colIndex);
+
 const matrixIsRotated = () => props.matrixIsRotated;
 </script>
 
