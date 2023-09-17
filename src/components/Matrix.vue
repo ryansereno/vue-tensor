@@ -1,6 +1,6 @@
 <template>
   <table>
-    <tr v-for="(row, rowIndex) in matrix" :key="rowIndex">
+    <tr v-for="(row, rowIndex) in matrixData" :key="rowIndex">
       <td v-for="(column, colIndex) in row" :key="colIndex">
         <span
           :class="{
@@ -27,7 +27,7 @@ import { ref } from "vue";
 import { defineProps } from "vue";
 
 const props = defineProps([
-  "matrix",
+  "matrixData",
   "activeRows",
   "activeColumns",
   "matrixIsRotated",

@@ -3,19 +3,19 @@
     <button @click="stepwiseMultiplication">Multiply Matrices</button>
     <Matrix
       ref="matrixARef"
-      :matrix="matrixA"
+      :matrixData="matrixA"
       :activeRows="matrixAActiveRows"
     />
     <span> X </span>
     <div :style="transformStyle" class="matrix-transition">
       <Matrix
         ref="matrixBRef"
-        :matrix="matrixB"
+        :matrixData="matrixB"
         :activeColumns="matrixBActiveColumns"
         :matrixIsRotated="isRotated"
       />
     </div>
-    <Matrix v-if="resultMatrix" :matrix="resultMatrix"></Matrix>
+    <Matrix v-if="resultMatrix" :matrixData="resultMatrix"></Matrix>
   </div>
 </template>
 
