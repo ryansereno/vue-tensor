@@ -3,7 +3,7 @@
     <button @click="stepwiseMultiplication">Multiply Matrices</button>
     <Matrix
       ref="matrixARef"
-      :matrixData="matrixA"
+      :matrixData="matrixAData"
       :activeRows="matrixAActiveRows"
     />
     <span v-if="!resultMatrix" class="matrix-math-operator"> X </span>
@@ -11,7 +11,7 @@
     <div :style="transformStyle" class="matrix-transition">
       <Matrix
         ref="matrixBRef"
-        :matrixData="matrixB"
+        :matrixData="matrixBData"
         :activeColumns="matrixBActiveColumns"
         :matrixIsRotated="isRotated"
       />
@@ -26,22 +26,6 @@ import Matrix from "@/components/Matrix.vue";
 const { matrixAData, matrixBData } = defineProps([
   "matrixAData",
   "matrixBData",
-]);
-const matrixA = ref([
-  [7, 1, 1, 3],
-  [0, 1, 1, 3],
-  [0, 1, 1, 3],
-  [4, 5, 5, 6],
-  [7, 8, 8, 9],
-  [7, 8, 8, 9],
-  [7, 8, 8, 9],
-]);
-
-const matrixB = ref([
-  [1, 0, 0, 1, 2],
-  [3, 2, 2, 3, 1],
-  [2, 3, 3, 2, 4],
-  [1, 0, 0, 1, 2],
 ]);
 const transformStyle = ref({});
 
@@ -59,16 +43,16 @@ const step = ref(0);
 let translateX, translateY, rowHeightA;
 
 const stepwiseMultiplication = () => {
-  const rowsA = matrixA.value.length;
-  const colsA = matrixA.value[0].length;
-  const rowsB = matrixB.value.length;
-  const colsB = matrixB.value[0].length;
+  const rowsA = matrixAData.length;
+  const colsA = matrixAData[0].length;
+  const rowsB = matrixBData.length;
+  const colsB = matrixBData[0].length;
   //check dimensions
   if (colsA !== rowsB) {
     console.error("Matrix multiplication not possible");
     return;
   }
-  const maxSteps = matrixA.value.length + matrixB.value[0].length; // Total steps needed
+  const maxSteps = matrixAData.length + matrixBData[0].length; // Total steps needed
 
   if (step.value === 0) {
     //get DOM element locations
@@ -78,7 +62,7 @@ const stepwiseMultiplication = () => {
     //initial movement of MatrixB, positioned above MatrixA and rotated
     translateX = matrixARect.left - matrixBRect.left;
     translateY = matrixARect.top - matrixBRect.top;
-    rowHeightA = matrixARect.height / matrixA.value.length;
+    rowHeightA = matrixARect.height / matrixAData.length;
 
     //initialize resultMatrix wirh null values
     const result = Array(rowsA)
@@ -109,7 +93,7 @@ const stepwiseMultiplication = () => {
         resultMatrix.value[row][col] = 0;
         for (let k = 0; k < colsA; k++) {
           resultMatrix.value[row][col] +=
-            matrixA.value[row][k] * matrixB.value[k][col];
+            matrixAData[row][k] * matrixBData[k][col];
         }
       }
     }

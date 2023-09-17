@@ -1,5 +1,5 @@
 <template>
-  <MatrixMultiplication :matrixA="matrixA" :matrixB="matrixB" />
+  <MatrixMultiplication :matrixAData="matrixA" :matrixBData="matrixB" />
 </template>
 
 <script setup>
