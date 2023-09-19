@@ -1,10 +1,11 @@
 <template>
-  <div style="display: flex; align-items: center">
+  <div style="display: flex; align-items: center; position: relative; padding: 1rem; border: 1px solid #ccc;">
     <button @click="stepwiseMultiplication">Multiply Matrices</button>
     <Matrix
       ref="matrixARef"
       :matrixData="matrixAData"
       :activeRows="matrixAActiveRows"
+      :rowLabels="matrixALabels"
     />
     <span v-if="!resultMatrix" class="matrix-math-operator"> X </span>
     <span v-if="resultMatrix" class="matrix-math-operator"> = </span>
@@ -16,21 +17,26 @@
         :matrixIsRotated="isRotated"
       />
     </div>
-    <Matrix v-if="resultMatrix" :matrixData="resultMatrix"></Matrix>
+    <div :style="resultMatrixStyle">
+      <Matrix v-if="resultMatrix" :matrixData="resultMatrix"></Matrix>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import Matrix from "@/components/Matrix.vue";
-const { matrixAData, matrixBData } = defineProps([
+const { matrixAData, matrixBData, matrixALabels, matrixBLabels } = defineProps([
   "matrixAData",
   "matrixBData",
+  "matrixALabels",
+  "matrixBLabels",
 ]);
 const transformStyle = ref({});
 
 const matrixARef = ref(null);
 const matrixBRef = ref(null);
+const resultMatrixStyle = ref({});
 
 const matrixAActiveRows = ref([]);
 const matrixBActiveColumns = ref([]);
@@ -64,7 +70,7 @@ const stepwiseMultiplication = () => {
     translateY = matrixARect.top - matrixBRect.top;
     rowHeightA = matrixARect.height / matrixAData.length;
 
-    //initialize resultMatrix wirh null values
+    //initialize resultMatrix with null values
     const result = Array(rowsA)
       .fill(null)
       .map(() => Array(colsB).fill(null));
@@ -72,6 +78,10 @@ const stepwiseMultiplication = () => {
 
     //send cell isRotated state to child matrices
     isRotated.value = true;
+    resultMatrixStyle.value = {
+      position: "absolute",
+      left: `${matrixBRect.left}px`,
+    };
   }
 
   if (step.value < maxSteps) {
@@ -107,18 +117,18 @@ const stepwiseMultiplication = () => {
 
     // Increment the step and set a timeout to call this function again
     step.value++;
-    setTimeout(stepwiseMultiplication, 1000);
+    setTimeout(stepwiseMultiplication, 600);
   }
 };
 </script>
 
 <style>
 .matrix-transition {
-  transition: transform 1s, top 1s, left 1s;
+  transition: transform 0.6s, top 0.6s, left 1s;
 }
 .matrix-math-operator {
-  font-size: 25px;
-  margin-left: 20px;
-  margin-right: 20px;
+  font-size: 2em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 </style>

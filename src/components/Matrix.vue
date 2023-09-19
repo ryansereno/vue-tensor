@@ -1,25 +1,41 @@
 <template>
-  <table>
+  <div style="display: flex">
+    <!--<table>
     <tr v-for="(row, rowIndex) in matrixData" :key="rowIndex">
-      <td v-for="(column, colIndex) in row" :key="colIndex">
-        <span
-          :class="{
-            activeRow: isActiveRow(rowIndex),
-            activeColumn: isActiveColumn(colIndex),
-            rotated: matrixIsRotated(),
-          }"
-        >
-          {{ column }}
-        </span>
-        <span
-          class="math-symbol"
-          :style="{ opacity: isActiveRow(rowIndex) ? 1 : 0 }"
-        >
-          ×
-        </span>
-      </td>
+      <td v-if="props.rowLabels">{{ props.rowLabels[rowIndex] }}</td>
     </tr>
-  </table>
+  </table>-->
+    <table>
+      <tr v-for="(row, rowIndex) in matrixData" :key="rowIndex">
+        <td v-for="(column, colIndex) in row" :key="colIndex">
+          <span
+            :class="{
+              activeRow: isActiveRow(rowIndex),
+              activeColumn: isActiveColumn(colIndex),
+              rotated: matrixIsRotated(),
+            }"
+          >
+            {{ column }}
+          </span>
+          <span
+            class="inner-cell-math-symbol"
+            :style="{ opacity: isActiveRow(rowIndex) ? 1 : 0 }"
+          >
+            ×
+          </span>
+          <span
+            class="between-cell-math-symbol"
+            :style="{
+              opacity:
+                isActiveRow(rowIndex) && colIndex < row.length - 1 ? 1 : 0,
+            }"
+          >
+            +
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
 </template>
 
 <script setup>
@@ -31,6 +47,7 @@ const props = defineProps([
   "activeRows",
   "activeColumns",
   "matrixIsRotated",
+  "rowLabels",
 ]);
 const isActiveRow = (rowIndex) =>
   props.activeRows && props.activeRows.includes(rowIndex);
@@ -50,8 +67,6 @@ td {
   max-width: 50px;
   min-width: 50px;
   height: 50px;
-  overflow: hidden;
-  border: 1px solid gray;
 }
 td > span {
   transition: transform 0.3s;
@@ -61,26 +76,35 @@ td > span {
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
+  overflow:hidden;
 }
 
 .activeRow {
-  transform: scale(0.55) translateX(-16px) translateY(10px);
+  transform: scale(0.7) translateX(-16px) translateY(10px);
 }
 .activeColumn:not(.rotated) {
-  transform: scale(0.55) translateX(17px) translateY(-13px);
+  transform: scale(0.7) translateX(17px) translateY(-13px);
 }
 .activeColumn.rotated {
-  transform: rotateZ(90deg) scale(0.55) translateX(17px) translateY(-13px);
+  transform: rotateZ(90deg) scale(0.7) translateX(17px) translateY(-13px);
 }
 .rotated:not(.activeColumn) {
   transform: rotateZ(90deg);
 }
-.math-symbol {
+.inner-cell-math-symbol {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.5em;
+  font-size: 0.8em;
+}
+.between-cell-math-symbol {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translate(-50%, -50%);
+  font-size: 0.8em;
+  color: red;
 }
 table tr:first-child td:first-child {
   border-top-left-radius: 5px;

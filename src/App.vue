@@ -1,25 +1,54 @@
 <template>
-  <MatrixMultiplication :matrixAData="matrixA" :matrixBData="matrixB" />
+  <MatrixMultiplication
+    :matrixAData="matrixA"
+    :matrixALabels="matrixALabels"
+    :matrixBData="matrixB"
+    :matrixBLabels="matrixBLabels"
+  />
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref } from "vue";
 import MatrixMultiplication from "@/components/MatrixMultiplication.vue";
 
-const matrixA = ref([
-  [7, 1, 1, 3],
-  [0, 1, 1, 3],
-  [0, 1, 1, 3],
-  [4, 5, 5, 6],
-  [7, 8, 8, 9],
-  [7, 8, 8, 9],
-  [7, 8, 8, 9],
-]);
+function generateRandomFloat() {
+  const number =  Math.random() * 10;
+  return number.toFixed(1)
+}
 
-const matrixB = ref([
-  [1, 0, 0, 1, 2],
-  [3, 2, 2, 3, 1],
-  [2, 3, 3, 2, 4],
-  [1, 0, 0, 1, 2],
-]);
+const rowsA = 8;
+const colsA = 4;
+const rowsB = 4;
+const colsB = 8;
+
+const matrixA = ref(
+  Array.from({ length: rowsA }, () => 
+    Array.from({ length: colsA }, () => generateRandomFloat()))
+);
+
+const matrixB = ref(
+  Array.from({ length: rowsB }, () => 
+    Array.from({ length: colsB }, () => generateRandomFloat()))
+);
+
+const matrixALabels = [
+  "cats",
+  "like",
+  "to",
+  "lie",
+  "in",
+  "the",
+  "evening",
+  "sun",
+];
+const matrixBLabels = [
+  "cats",
+  "like",
+  "to",
+  "lie",
+  "in",
+  "the",
+  "evening",
+  "sun",
+];
 </script>
