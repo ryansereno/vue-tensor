@@ -1,5 +1,12 @@
 <template>
-  <div style="display: flex; align-items: center; position: relative; padding: 1rem; border: 1px solid #ccc;">
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 1rem;
+    "
+  >
     <button @click="stepwiseMultiplication">Multiply Matrices</button>
     <Matrix
       ref="matrixARef"
@@ -15,10 +22,11 @@
         :matrixData="matrixBData"
         :activeColumns="matrixBActiveColumns"
         :matrixIsRotated="isRotated"
+        :columnLabels="matrixBLabels"
       />
     </div>
     <div :style="resultMatrixStyle">
-      <Matrix v-if="resultMatrix" :matrixData="resultMatrix"></Matrix>
+      <Matrix v-if="resultMatrix" :matrixData="resultMatrix" :isHeatMap="true"></Matrix>
     </div>
   </div>
 </template>
@@ -66,9 +74,9 @@ const stepwiseMultiplication = () => {
     const matrixBRect = matrixBRef.value.$el.getBoundingClientRect();
 
     //initial movement of MatrixB, positioned above MatrixA and rotated
-    translateX = matrixARect.left - matrixBRect.left;
     translateY = matrixARect.top - matrixBRect.top;
     rowHeightA = matrixARect.height / matrixAData.length;
+      translateX = matrixARect.left - matrixBRect.left;
 
     //initialize resultMatrix with null values
     const result = Array(rowsA)
