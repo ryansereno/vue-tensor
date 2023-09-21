@@ -1,33 +1,41 @@
 <template>
-  <div
-    style="
-      display: flex;
-      align-items: center;
-      position: relative;
-      padding: 1rem;
-    "
-  >
-    <button @click="stepwiseMultiplication">Multiply Matrices</button>
-    <Matrix
-      ref="matrixARef"
-      :matrixData="matrixAData"
-      :activeRows="matrixAActiveRows"
-      :rowLabels="matrixALabels"
-    />
-    <span v-if="!resultMatrix" class="matrix-math-operator"> X </span>
-    <span v-if="resultMatrix" class="matrix-math-operator"> = </span>
-    <div :style="transformStyle" class="matrix-transition">
+  <div style="display: flex; flex-direction:column; align-items:center;">
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 1rem;
+      "
+    >
       <Matrix
-        ref="matrixBRef"
-        :matrixData="matrixBData"
-        :activeColumns="matrixBActiveColumns"
-        :matrixIsRotated="isRotated"
-        :columnLabels="matrixBLabels"
+        ref="matrixARef"
+        :matrixData="matrixAData"
+        :activeRows="matrixAActiveRows"
+        :rowLabels="matrixALabels"
       />
+      <span v-if="!resultMatrix" class="matrix-math-operator"> X </span>
+      <span v-if="resultMatrix" class="matrix-math-operator"> = </span>
+      <div :style="transformStyle" class="matrix-transition">
+        <Matrix
+          ref="matrixBRef"
+          :matrixData="matrixBData"
+          :activeColumns="matrixBActiveColumns"
+          :matrixIsRotated="isRotated"
+          :columnLabels="matrixBLabels"
+        />
+      </div>
+      <div :style="resultMatrixStyle">
+        <Matrix
+          v-if="resultMatrix"
+          :matrixData="resultMatrix"
+          :isHeatMap="true"
+        ></Matrix>
+      </div>
     </div>
-    <div :style="resultMatrixStyle">
-      <Matrix v-if="resultMatrix" :matrixData="resultMatrix" :isHeatMap="true"></Matrix>
-    </div>
+    <button style="max-width: 100px" @click="stepwiseMultiplication">
+      Multiply Matrices
+    </button>
   </div>
 </template>
 
@@ -54,6 +62,8 @@ const resultMatrix = ref(null);
 
 const step = ref(0);
 
+const delay = 400
+
 let translateX, translateY, rowHeightA;
 
 const stepwiseMultiplication = () => {
@@ -76,7 +86,7 @@ const stepwiseMultiplication = () => {
     //initial movement of MatrixB, positioned above MatrixA and rotated
     translateY = matrixARect.top - matrixBRect.top;
     rowHeightA = matrixARect.height / matrixAData.length;
-      translateX = matrixARect.left - matrixBRect.left;
+    translateX = matrixARect.left - matrixBRect.left;
 
     //initialize resultMatrix with null values
     const result = Array(rowsA)
@@ -87,8 +97,7 @@ const stepwiseMultiplication = () => {
     //send cell isRotated state to child matrices
     isRotated.value = true;
     resultMatrixStyle.value = {
-      position: "absolute",
-      left: `${matrixBRect.left}px`,
+      transform: `translateX(-${matrixBRect.width}px)`,
     };
   }
 
@@ -125,14 +134,14 @@ const stepwiseMultiplication = () => {
 
     // Increment the step and set a timeout to call this function again
     step.value++;
-    setTimeout(stepwiseMultiplication, 600);
+    setTimeout(stepwiseMultiplication, delay);
   }
 };
 </script>
 
 <style>
 .matrix-transition {
-  transition: transform 0.6s, top 0.6s, left 1s;
+  transition: transform 0.4s, top 0.4s, left 0.4s;
 }
 .matrix-math-operator {
   font-size: 2em;

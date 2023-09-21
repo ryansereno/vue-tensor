@@ -17,8 +17,8 @@ function generateRandomFloat() {
 }
 
 const rowsA = 11;
-const colsA = 4;
-const rowsB = 4;
+const colsA = 10;
+const rowsB = 10;
 const colsB = 11;
 
 const matrixA = ref(
