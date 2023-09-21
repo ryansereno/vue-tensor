@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction:column; align-items:center;">
+  <div style="display: flex; flex-direction: column; align-items: center">
     <div
       style="
         display: flex;
@@ -36,6 +36,7 @@
     <button style="max-width: 100px" @click="stepwiseMultiplication">
       Multiply Matrices
     </button>
+    <button style="max-width: 100px" @click="resetFunction">Reset</button>
   </div>
 </template>
 
@@ -62,7 +63,7 @@ const resultMatrix = ref(null);
 
 const step = ref(0);
 
-const delay = 400
+const delay = 400;
 
 let translateX, translateY, rowHeightA;
 
@@ -137,6 +138,15 @@ const stepwiseMultiplication = () => {
     setTimeout(stepwiseMultiplication, delay);
   }
 };
+
+const resetFunction = () =>{
+  step.value = 0
+  transformStyle.value = {}
+  resultMatrix.value = null
+  isRotated.value = false
+  matrixAActiveRows = []
+  matrixBActiveColumns = []
+}
 </script>
 
 <style>

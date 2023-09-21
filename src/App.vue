@@ -16,10 +16,10 @@ function generateRandomFloat() {
   return number.toFixed(1);
 }
 
-const rowsA = 11;
+const rowsA = 8;
 const colsA = 10;
 const rowsB = 10;
-const colsB = 11;
+const colsB = 8;
 
 const matrixA = ref(
   Array.from({ length: rowsA }, () =>
@@ -34,29 +34,23 @@ const matrixB = ref(
 );
 
 const matrixALabels = [
-  "silence",
+  "any",
+  "sufficiently",
+  "advanced",
+  "technology",
   "is",
-  "the",
-  "language",
-  "of",
-  "god",
-  "all",
-  "else",
-  "is",
-  "poor",
-  "translation",
+  "indistinguishable",
+  "from",
+  "magic",
 ];
 const matrixBLabels = [
-  "silence", 
-  "is", 
-  "the", 
-  "language", 
-  "of", 
-  "god", 
-  "all", 
-  "else", 
-  "is", 
-  "poor", 
-  "translation"
+  "any",
+  "sufficiently",
+  "advanced",
+  "technology",
+  "is",
+  "indistinguishable",
+  "from",
+  "magic",
 ];
 </script>
