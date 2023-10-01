@@ -16,7 +16,7 @@
           <td v-for="(label, labelIdx) in props.columnLabels" :key="labelIdx">
             <span
               :class="{
-                rotated: matrixIsRotated(),
+                rotated: props.matrixIsRotated,
                 label,
               }"
             >
@@ -32,7 +32,7 @@
               :class="{
                 activeRow: isActiveRow(rowIndex),
                 activeColumn: isActiveColumn(colIndex),
-                rotated: matrixIsRotated(),
+                rotated: props.matrixIsRotated,
               }"
               :style="{
                 backgroundColor:
@@ -69,25 +69,23 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { defineProps } from "vue";
 
-const props = defineProps([
-  "matrixData",
-  "activeRows",
-  "activeColumns",
-  "matrixIsRotated",
-  "rowLabels",
-  "columnLabels",
-  "isHeatMap",
-]);
+const props = defineProps({
+  matrixData: Array,
+  activeRows: Array,
+  activeColumns: Array,
+  matrixIsRotated: Boolean,
+  rowLabels: Array,
+  columnLabels: Array,
+  isHeatMap: Boolean,
+});
 const isActiveRow = (rowIndex) =>
   props.activeRows && props.activeRows.includes(rowIndex);
 
 const isActiveColumn = (colIndex) =>
   props.activeColumns && props.activeColumns.includes(colIndex);
 
-const matrixIsRotated = () => props.matrixIsRotated;
-
+//get min and max for entire matrix
 const matrixMinMax = computed(() => {
   let min = Infinity;
   let max = -Infinity;
@@ -107,9 +105,9 @@ const getHeatmapColor = (value) => {
     const { min, max } = matrixMinMax.value;
     const ratio = (value - min) / (max - min);
 
-    const hue = 210 - (ratio * (210 - 60)); // interpolate between 210 and 60
+    const hue = 210 - ratio * (210 - 60); // interpolate between 210 and 60
     const saturation = 100; // keep saturation constant at 100%
-    const lightness = 20 + (ratio * (50 - 20)); // interpolate between 20% and 50%
+    const lightness = 20 + ratio * (50 - 20); // interpolate between 20% and 50%
 
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   } else {
@@ -143,7 +141,9 @@ td {
   height: 50px;
 }
 .label {
+  inline-size: 50px;
   overflow: visible;
+  overflow-wrap: break-word;
 }
 td > span {
   transition: transform 0.3s;
@@ -181,6 +181,7 @@ td > span {
   transform: translate(-50%, -50%);
   font-size: 0.9em;
 }
+
 table tr:first-child td:first-child {
   border-top-left-radius: 5px;
 }
