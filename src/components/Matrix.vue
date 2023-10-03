@@ -141,12 +141,12 @@ td {
   height: 50px;
 }
 .label {
-  inline-size: 50px;
   overflow: visible;
   overflow-wrap: break-word;
 }
 td > span {
   transition: transform 0.3s;
+  inline-size: 50px;
   display: flex;
   width: 100%;
   height: 100%;
